@@ -1,0 +1,55 @@
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Networking;
+using System.IO;
+using System.Collections;
+
+public class FileDownloader : MonoBehaviour
+{
+    public Text statusText;
+    public string fileUrl = "https://drive.google.com/uc?export=download&id=1bMNC0nxwu5e7Qr2p7Y7eXAjm8joxTY3F"; // Replace with your Google Drive file link
+    public string fileUrl2 = "https://drive.google.com/uc?export=download&id=1w7mH87TYWA4XXySnTD9B7k5QEhIP1gmy"; // Replace with your Google Drive file link
+
+    public string filename1 = "Partitur 1.pdf";
+    public string filename2 = "Partitur 2.pdf";
+
+    public string filename;
+    public string urlpdf;
+    public void DownloadFile1()
+    {
+        filename = filename1;
+        urlpdf = fileUrl;
+        StartCoroutine(DownloadFileCoroutine());
+    }
+    public void DownloadFile2()
+    {
+        filename = filename2;
+        urlpdf = fileUrl2;
+        StartCoroutine(DownloadFileCoroutine());
+    }
+
+    private IEnumerator DownloadFileCoroutine()
+    {
+        UnityWebRequest www = UnityWebRequest.Get(urlpdf);
+
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            // Get the downloaded file data
+            byte[] fileData = www.downloadHandler.data;
+
+            // Define the file path where you want to save the downloaded file
+            string filePath = Application.persistentDataPath;
+
+            // Save the downloaded file to the persistent data path
+            File.WriteAllBytes(filePath, fileData);
+
+            statusText.text = "File Downloaded to: " + filePath;
+        }
+        else
+        {
+            statusText.text = "Download Failed. Error: " + www.error;
+        }
+    }
+}
