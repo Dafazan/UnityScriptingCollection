@@ -1,0 +1,76 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+
+public class MultiscriptScoring : MonoBehaviour
+{
+    AnBin anBin;
+    OrBin orBin;
+
+    [SerializeField]
+    GameObject AnorganicBin;
+    [SerializeField]
+    GameObject OrganicBin;
+    [SerializeField]
+    int ObjectIntoBin;
+    public int scores;
+
+    public bool isCompleted = false;
+    
+    public TextMeshProUGUI scoreUI;
+    public TextMeshProUGUI scoreWinUI;
+
+    public GameObject panelGameOver;
+    public GameObject panelFinished;
+
+    private void Start()
+    {
+       
+    }
+    void Awake()
+    {
+        anBin = AnorganicBin.GetComponent<AnBin>();
+        orBin = OrganicBin.GetComponent<OrBin>();
+        
+        
+    }
+
+   
+    void Update()
+    {
+        //Debug.Log(anBin.Anscore + orBin.Orscore);
+        scores = anBin.Anscore + orBin.Orscore;
+        ObjectIntoBin = anBin.ObjectIn + orBin.ObjectIn;
+        scoreUI.text = "Score: " + scores.ToString("0");
+        scoreWinUI.text = "Score: " + scores.ToString("0") ;
+
+        if (ObjectIntoBin == 30)
+        {
+            IsFinished();
+        }
+
+        if (scores < 0)
+        {
+            GameOver();
+        }
+    }
+
+    void IsFinished()
+    {
+        //Debug.Log("Finished");
+        panelFinished.SetActive(true);
+       
+    }
+
+    void GameOver()
+    {
+        //Debug.Log("You have Failed");
+        panelGameOver.SetActive(true);
+    }
+    public void save()
+    {
+        PlayerPrefs.SetInt("Scores", scores);
+    }
+}
